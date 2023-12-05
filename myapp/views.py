@@ -1,9 +1,11 @@
+from django.http import response
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Note
 from .serializers import NoteSerializer
+from .utils import createNote, deleteNote, getNoteDetails, getNotesList, updateNote
 
 # Create your views here.
 
@@ -46,7 +48,34 @@ def getRoutes(request):
     return Response(routes)
 
 
-@api_view(["GET"])
+# make the API restful by using 2 roots: /notes with (get and post methods)
+# and /note/<id> with (GET,PUT, DELETE methods)
+
+
+@api_view(["GET", "POST"])
+def getNotes(request):
+    if request.method == "GET":
+        return getNotesList(request)
+
+    if request.method == "POST":
+        return createNote(request)
+
+
+@api_view(["GET", "PUT", "DELETE"])
+def getNote(request, pk):
+    if request.method == "GET":
+        return getNoteDetails(request, pk)
+
+    if request.method == "PUT":
+        return updateNote(request, pk)
+
+    if request.method == "DELETE":
+        return deleteNote(request, pk)
+
+
+
+#First method by using diffrent roots (see in urls.py file routs commented) 
+"""@api_view(["GET"])
 def getNotes(request):
     notes = Note.objects.all().order_by("-updated")
     serializer = NoteSerializer(notes, many=True)
@@ -100,4 +129,4 @@ def deleteNote(request, pk):
     except:
         return Response(f"Note {pk} does not exist ")
 
-    return Response("Note was deleted")
+    return Response("Note was deleted")"""

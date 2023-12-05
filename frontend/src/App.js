@@ -13,7 +13,7 @@ function App() {
       path: '/',
       Component: NoteListPage
     },{
-      path: '/note/:id',
+      path: '/notes/:id',
       Component: NotePage,
     }
   ])
